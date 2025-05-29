@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // POST /signup
 router.post('/signup', async (req, res) => {
-    const { firstName, dob, email, password, confirmPassword } = req.body;
+    const { firstName, dob, email, phoneNumber, password, confirmPassword } = req.body;
 
     if (password !== confirmPassword)
         return res.status(400).json({ msg: "Passwords do not match" });
@@ -18,7 +18,7 @@ router.post('/signup', async (req, res) => {
         return res.status(400).json({ msg: "User already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ firstName, dob, email, password: hashedPassword });
+    const user = new User({ firstName, dob, email, phoneNumber, password: hashedPassword });
     await user.save();
     res.status(201).json({ msg: "User created" });
 });
@@ -43,7 +43,7 @@ router.get('/users', async (req, res) => {
     res.json(users);
 });
 
-// GET user by ID
+// GET user by ID;
 router.get('/users/:id', async (req, res) => {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ msg: "User not found" });
@@ -52,8 +52,8 @@ router.get('/users/:id', async (req, res) => {
 
 // PUT update user
 router.put('/users/:id', async (req, res) => {
-    const { firstName, dob, email } = req.body;
-    await User.findByIdAndUpdate(req.params.id, { firstName, dob, email });
+    const { firstName, dob, email, phoneNumber } = req.body;
+    await User.findByIdAndUpdate(req.params.id, { firstName, dob, email, phoneNumber });
     res.json({ msg: "User updated" });
 });
 
